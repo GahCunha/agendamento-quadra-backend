@@ -4,9 +4,23 @@ const createBooking = async ({ userId, courtId, date, startTime, endTime }) => {
   const now = new Date();
   const bookingDate = new Date(date);
 
-  // Impede reservas para horários passados
   if (bookingDate < now) {
     throw new Error('Não é possível reservar para uma data no passado.');
+  }
+
+  // Verifica se o usuário já tem uma reserva no mesmo horário
+  const existingBooking = await prisma.booking.findFirst({
+    where: {
+      userId,
+      date: bookingDate,
+      OR: [
+        { startTime: { lte: new Date(endTime) }, endTime: { gte: new Date(startTime) } },
+      ],
+    },
+  });
+
+  if (existingBooking) {
+    throw new Error('Usuário já tem uma reserva nesse horário.');
   }
 
   return prisma.booking.create({
