@@ -37,9 +37,17 @@ const getUserBookings = async (userId) => {
   });
 };
 
-const cancelBooking = async (id) => {
+const cancelBooking = async (id, userId, userRole) => {
   const booking = await prisma.booking.findUnique({ where: { id: parseInt(id) } });
-  if (!booking) throw new Error('Reserva não encontrada');
+
+  if (!booking) {
+    throw new Error('Reserva não encontrada.');
+  }
+
+  // Usuários comuns só podem cancelar suas próprias reservas
+  if (userRole !== 'ADMIN' && booking.userId !== userId) {
+    throw new Error('Usuário não tem permissão para cancelar esta reserva.');
+  }
 
   return prisma.booking.update({
     where: { id: parseInt(id) },

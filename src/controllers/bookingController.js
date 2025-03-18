@@ -27,12 +27,13 @@ exports.getUserBookings = async (req, res) => {
 
 exports.cancelBooking = async (req, res) => {
   try {
-    await bookingService.cancelBooking(req.params.id);
+    await bookingService.cancelBooking(req.params.id, req.user.id, req.user.role);
     res.json({ message: 'Reserva cancelada com sucesso' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
+
 
 exports.updateBookingStatus = async (req, res) => {
   try {
