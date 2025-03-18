@@ -47,8 +47,27 @@ const cancelBooking = async (id) => {
   });
 };
 
+const updateBookingStatus = async (id, status) => {
+  const validStatuses = ['APPROVED', 'REJECTED', 'CANCELLED'];
+
+  if (!validStatuses.includes(status)) {
+    throw new Error('Status inválido. Os valores permitidos são: APPROVED, REJECTED, CANCELLED.');
+  }
+
+  const booking = await prisma.booking.findUnique({ where: { id: parseInt(id) } });
+  if (!booking) {
+    throw new Error('Reserva não encontrada.');
+  }
+
+  return prisma.booking.update({
+    where: { id: parseInt(id) },
+    data: { status },
+  });
+};
+
 module.exports = {
   createBooking,
   getUserBookings,
   cancelBooking,
+  updateBookingStatus,
 };

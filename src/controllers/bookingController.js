@@ -12,7 +12,7 @@ exports.createBooking = async (req, res) => {
 
 exports.getUserBookings = async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId); // Converte para número
+    const userId = parseInt(req.params.userId); 
 
     if (isNaN(userId)) {
       return res.status(400).json({ error: 'ID do usuário inválido' });
@@ -29,6 +29,18 @@ exports.cancelBooking = async (req, res) => {
   try {
     await bookingService.cancelBooking(req.params.id);
     res.json({ message: 'Reserva cancelada com sucesso' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.updateBookingStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const updatedBooking = await bookingService.updateBookingStatus(id, status);
+    res.json(updatedBooking);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
