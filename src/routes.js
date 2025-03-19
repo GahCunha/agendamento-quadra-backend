@@ -3,6 +3,7 @@ const userController = require('./controllers/userController');
 const authController = require('./controllers/authController');
 const courtController = require('./controllers/courtController');
 const bookingController = require('./controllers/bookingController');
+const blockedTimeController = require('./controllers/blockedTimeController'); // ✅ ADICIONAR ESTA LINHA
 const { authMiddleware, adminMiddleware } = require('./middleware');
 
 const router = express.Router();
@@ -26,5 +27,9 @@ router.patch('/bookings/:id/cancel', authMiddleware, bookingController.cancelBoo
 
 // Aprovação de reservas (Apenas ADMIN pode aprovar/rejeitar)
 router.patch('/bookings/:id/status', authMiddleware, adminMiddleware, bookingController.updateBookingStatus);
+
+router.post('/courts/:courtId/blocked-times', authMiddleware, adminMiddleware, blockedTimeController.blockTime);
+router.get('/courts/:courtId/blocked-times', authMiddleware, blockedTimeController.getBlockedTimes);
+router.delete('/blocked-times/:id', authMiddleware, adminMiddleware, blockedTimeController.deleteBlockedTime);
 
 module.exports = router;

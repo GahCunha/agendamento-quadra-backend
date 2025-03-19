@@ -24,15 +24,16 @@ enum Role {
 }
 
 model Court {
-  id          Int       @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   name        String
   location    String
   description String?
-  openTime    String    // Horário de abertura (ex: "08:00")
-  closeTime   String    // Horário de fechamento (ex: "22:00")
+  openTime    String
+  closeTime   String
   bookings    Booking[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  blockedTimes BlockedTime[] // Adicionamos esta linha para referenciar os bloqueios
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model Booking {
@@ -47,6 +48,19 @@ model Booking {
   court      Court          @relation(fields: [courtId], references: [id])
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
+}
+
+model BlockedTime {
+  id           Int       @id @default(autoincrement())
+  courtId      Int
+  date         DateTime? // Se for um bloqueio para uma data específica
+  startTime    String?   // Se for um bloqueio parcial
+  endTime      String?   // Se for um bloqueio parcial
+  recurringDay Int?      // Para bloqueios semanais (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
+  reason       String?   // Motivo do bloqueio
+  court        Court     @relation(fields: [courtId], references: [id])
+
+  createdAt    DateTime  @default(now())
 }
 
 enum BookingStatus {
