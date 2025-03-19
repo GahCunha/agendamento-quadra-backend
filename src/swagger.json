@@ -1,0 +1,222 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Reservas de Quadras",
+    "description": "API para gerenciamento de usuários, quadras, reservas e bloqueios de horários.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Servidor Local"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Criar um Usuário",
+        "description": "Cria um novo usuário no sistema.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["name", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso."
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Buscar Usuário pelo ID",
+        "description": "Retorna os detalhes de um usuário.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Usuário encontrado."
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login de Usuário",
+        "description": "Autentica um usuário e retorna um token JWT.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login bem-sucedido."
+          }
+        }
+      }
+    },
+    "/courts": {
+      "get": {
+        "summary": "Listar Quadras",
+        "description": "Retorna todas as quadras cadastradas.",
+        "responses": {
+          "200": {
+            "description": "Lista de quadras."
+          }
+        }
+      },
+      "post": {
+        "summary": "Criar Quadra (ADMIN)",
+        "description": "Cria uma nova quadra. Apenas ADMIN pode executar esta ação.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "location": { "type": "string" },
+                  "description": { "type": "string" },
+                  "openTime": { "type": "string" },
+                  "closeTime": { "type": "string" }
+                },
+                "required": ["name", "location", "openTime", "closeTime"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Quadra criada com sucesso."
+          }
+        }
+      }
+    },
+    "/bookings": {
+      "post": {
+        "summary": "Criar Reserva",
+        "description": "Cria uma nova reserva no sistema.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courtId": { "type": "integer" },
+                  "date": { "type": "string", "format": "date" },
+                  "startTime": { "type": "string" },
+                  "endTime": { "type": "string" }
+                },
+                "required": ["courtId", "date", "startTime", "endTime"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reserva criada com sucesso."
+          }
+        }
+      }
+    },
+    "/bookings/{id}/cancel": {
+      "patch": {
+        "summary": "Cancelar Reserva",
+        "description": "Cancela uma reserva existente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Reserva cancelada com sucesso."
+          }
+        }
+      }
+    },
+    "/courts/{courtId}/blocked-times": {
+      "post": {
+        "summary": "Criar Bloqueio de Horário (ADMIN)",
+        "description": "Bloqueia um horário específico ou um dia inteiro. Apenas ADMIN pode executar esta ação.",
+        "parameters": [
+          {
+            "name": "courtId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "recurringDay": { "type": "integer" },
+                  "reason": { "type": "string" }
+                },
+                "required": ["recurringDay", "reason"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bloqueio criado com sucesso."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [{ "bearerAuth": [] }]
+}
