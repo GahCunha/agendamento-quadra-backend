@@ -2,8 +2,20 @@ const bookingService = require('../services/bookingService');
 
 exports.createBooking = async (req, res) => {
   try {
-    const booking = await bookingService.createBooking(req.body);
-    res.status(201).json(booking);
+    const { courtId, date, startTime, endTime } = req.body;
+    const userId = req.user.id; // ✅ Pegamos o usuário autenticado pelo token JWT
+
+    if (!courtId || isNaN(courtId)) {
+      return res.status(400).json({ error: 'O ID da quadra é obrigatório e deve ser um número válido.' });
+    }
+
+    const response = await bookingService.createBooking({ userId, courtId, date, startTime, endTime });
+
+    const {createdAt, updatedAt, ...filteredResponse } = response;
+    return res.status(201).json({
+      message: "Reserva criada com sucesso.",
+      booking: filteredResponse,
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

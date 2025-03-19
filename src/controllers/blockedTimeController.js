@@ -2,19 +2,19 @@ const blockedTimeService = require('../services/blockedTimeService');
 
 exports.blockTime = async (req, res) => {
   try {
-    const response = await blockedTimeService.blockTime(req.body);
+    const courtId = parseInt(req.params.courtId); // ✅ Agora pegamos o courtId da URL
 
-    if (response.status === 'fail') {
-      return res.status(400).json({
-        message: response.message,
-        blockedTime: response.blockedTime,
-      });
+    if (isNaN(courtId)) {
+      return res.status(400).json({ error: 'O ID da quadra deve ser um número válido.' });
     }
 
-    return res.status(201).json({
-      message: response.message,
-      blockedTime: response.blockedTime,
-    });
+    const response = await blockedTimeService.blockTime({ courtId, ...req.body });
+
+    if (response.status === 'fail') {
+      return res.status(400).json({ message: response.message, blockedTime: response.blockedTime });
+    }
+
+    return res.status(201).json({ message: response.message, blockedTime: response.blockedTime });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -29,7 +29,10 @@ exports.getBlockedTimes = async (req, res) => {
     }
 
     const blockedTimes = await blockedTimeService.getBlockedTimes(courtId);
-    res.json(blockedTimes);
+
+    const filteredBlockedTimes = blockedTimes.map(({ createdAt, updatedAt, ...blocked }) => blocked);
+
+    res.json(filteredBlockedTimes);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

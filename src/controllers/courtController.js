@@ -12,7 +12,9 @@ exports.createCourt = async (req, res) => {
 exports.listCourts = async (req, res) => {
   try {
     const courts = await courtService.listCourts();
-    res.json(courts);
+
+    const filteredCourts = courts.map(({ createdAt, updatedAt, ...court }) => court);
+    res.json(filteredCourts);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
