@@ -1,10 +1,11 @@
 const prisma = require('../prismaClient');
 
-const createCourt = async ({ name, location, description }) => {
+const createCourt = async ({ name, location, description, openTime, closeTime }) => {
   return prisma.court.create({
-    data: { name, location, description },
+    data: { name, location, description, openTime, closeTime },
   });
 };
+
 
 const listCourts = async () => {
   return prisma.court.findMany();
