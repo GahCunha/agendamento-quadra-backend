@@ -10,7 +10,7 @@ const router = express.Router();
 
 // Rotas de usuário
 router.post("/users", userController.createUser);
-router.get('/users/me', authMiddleware, userController.getMe);
+router.get("/users/me", authMiddleware, userController.getMe);
 router.get("/users/:id", authMiddleware, userController.getUser);
 
 // Rotas de autenticação
@@ -28,6 +28,7 @@ router.get("/courts/:id", courtController.getCourtById);
 
 // Rotas de reservas
 router.post("/bookings", authMiddleware, bookingController.createBooking);
+router.get("/bookings/me", authMiddleware, bookingController.getMyBookings);
 router.get(
   "/bookings/:userId",
   authMiddleware,

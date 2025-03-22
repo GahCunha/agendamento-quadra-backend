@@ -136,9 +136,17 @@ const updateBookingStatus = async (id, status) => {
   });
 };
 
+const getMyBookings = async (userId) => {
+  return prisma.booking.findMany({
+    where: { userId: parseInt(userId) },
+    include: { court: true },
+  });
+};
+
 module.exports = {
   createBooking,
   getUserBookings,
   cancelBooking,
   updateBookingStatus,
+  getMyBookings,
 };

@@ -37,6 +37,22 @@ exports.getUserBookings = async (req, res) => {
   }
 };
 
+exports.getMyBookings = async (req, res) => {
+  try {
+    const userId = Number(req.user?.id)
+
+    if (!userId || isNaN(userId)) {
+      return res.status(400).json({ error: "ID do usuário inválido" })
+    }
+
+    const bookings = await bookingService.getMyBookings(userId)
+    res.json(bookings)
+  } catch (error) {
+    console.error("Erro ao buscar reservas:", error)
+    res.status(500).json({ error: error.message })
+  }
+}
+
 exports.cancelBooking = async (req, res) => {
   try {
     await bookingService.cancelBooking(req.params.id, req.user.id, req.user.role);
