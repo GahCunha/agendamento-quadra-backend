@@ -48,6 +48,11 @@ router.patch(
   bookingController.updateBookingStatus
 );
 
+router.get(
+  "/courts/:courtId/bookings",
+  authMiddleware,
+  bookingController.getBookingsByCourt
+);
 router.post(
   "/courts/:courtId/blocked-times",
   authMiddleware,

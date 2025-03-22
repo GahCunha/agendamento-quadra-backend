@@ -143,10 +143,27 @@ const getMyBookings = async (userId) => {
   });
 };
 
+async function getBookingsByCourt(courtId) {
+  return prisma.booking.findMany({
+    where: {
+      courtId,
+      status: {
+        not: "CANCELLED"
+      }
+    },
+    select: {
+      date: true,
+      startTime: true,
+      endTime: true,
+      status: true
+    }
+  })
+}
 module.exports = {
   createBooking,
   getUserBookings,
   cancelBooking,
   updateBookingStatus,
   getMyBookings,
+  getBookingsByCourt
 };

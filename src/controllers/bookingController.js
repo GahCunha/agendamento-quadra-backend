@@ -74,3 +74,19 @@ exports.updateBookingStatus = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.getBookingsByCourt = async (req, res) => {
+  const courtId = parseInt(req.params.courtId)
+
+  if (isNaN(courtId)) {
+    return res.status(400).json({ error: "ID da quadra inválido" })
+  }
+
+  try {
+    const bookings = await bookingService.getBookingsByCourt(courtId)
+    res.json(bookings)
+  } catch (error) {
+    console.error("Erro ao buscar reservas da quadra:", error)
+    res.status(500).json({ error: error.message })
+  }
+}
