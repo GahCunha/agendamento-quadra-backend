@@ -1,4 +1,4 @@
-const userService = require('../services/userService');
+const userService = require("../services/userService");
 
 exports.createUser = async (req, res) => {
   try {
@@ -9,10 +9,21 @@ exports.createUser = async (req, res) => {
   }
 };
 
+exports.getMe = async (req, res) => {
+  try {
+    const user = await userService.getUserProfile(req.user.id);
+
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 exports.getUser = async (req, res) => {
   try {
     const user = await userService.getUserById(req.params.id);
-    if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
 
     res.json(user);
   } catch (error) {
