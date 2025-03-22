@@ -9,8 +9,8 @@ exports.login = async (req, res) => {
       return res.status(400).json({ error: 'Email e senha são obrigatórios' });
     }
 
-    const { token } = await authService.login(req.body);
-    res.json({ token });
+    const { token, userId } = await authService.login(req.body);
+    res.json({ token, userId });
   } catch (error) {
     console.error('❌ Erro no login:', error.message);
     res.status(401).json({ error: error.message });
