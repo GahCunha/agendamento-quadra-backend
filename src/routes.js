@@ -16,6 +16,9 @@ router.get("/users/:id", authMiddleware, userController.getUser);
 // Rotas de autenticação
 router.post("/auth/login", authController.login);
 
+// Nova rota para refresh token
+router.post("/auth/refresh", authController.refreshToken);
+
 // Rotas de quadras (Apenas ADMIN pode criar)
 router.post(
   "/courts",

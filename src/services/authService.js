@@ -25,4 +25,34 @@ const login = async ({ email, password }) => {
   return { token };
 };
 
-module.exports = { login };
+function refreshToken(refreshToken) {
+  return new Promise((resolve, reject) => {
+    if (!refreshToken) {
+      return reject(new Error("Refresh token is missing"));
+    }
+
+    // Verifica o refresh token usando a chave secreta
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, decoded) => {
+        if (err) {
+          return reject(new Error("Invalid refresh token"));
+        }
+
+        // Supondo que o payload do refresh token contenha o userId
+        const { userId } = decoded;
+
+        // Gere um novo token de acesso (por exemplo, com validade de 15 minutos)
+        const newAccessToken = jwt.sign(
+          { userId },
+          process.env.ACCESS_TOKEN_SECRET,
+          { expiresIn: "15m" }
+        );
+        resolve(newAccessToken);
+      }
+    );
+  });
+}
+
+module.exports = { login, refreshToken };

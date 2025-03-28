@@ -13,54 +13,58 @@ model User {
   email     String    @unique
   password  String
   role      Role      @default(USER)
-  bookings  Booking[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-}
-
-enum Role {
-  USER
-  ADMIN
+  bookings  Booking[]
 }
 
 model Court {
-  id          Int           @id @default(autoincrement())
-  name        String
-  location    String
-  description String?
-  openTime    String
-  closeTime   String
-  bookings    Booking[]
-  blockedTimes BlockedTime[] // Adicionamos esta linha para referenciar os bloqueios
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id           Int           @id @default(autoincrement())
+  name         String
+  location     String
+  description  String?
+  openTime     String
+  closeTime    String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  blockedTimes BlockedTime[]
+  bookings     Booking[]
 }
 
 model Booking {
-  id         Int            @id @default(autoincrement())
-  userId     Int
-  courtId    Int
-  date       DateTime       
-  startTime  DateTime       
-  endTime    DateTime       
-  status     BookingStatus  @default(PENDING)
-  user       User           @relation(fields: [userId], references: [id])
-  court      Court          @relation(fields: [courtId], references: [id])
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  id        Int           @id @default(autoincrement())
+  userId    Int
+  courtId   Int
+  date      DateTime
+  startTime DateTime
+  endTime   DateTime
+  status    BookingStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  court     Court         @relation(fields: [courtId], references: [id])
+  user      User          @relation(fields: [userId], references: [id])
+
+  @@index([courtId], map: "Booking_courtId_fkey")
+  @@index([userId], map: "Booking_userId_fkey")
 }
 
 model BlockedTime {
   id           Int       @id @default(autoincrement())
   courtId      Int
-  date         DateTime? // Se for um bloqueio para uma data específica
-  startTime    String?   // Se for um bloqueio parcial
-  endTime      String?   // Se for um bloqueio parcial
-  recurringDay Int?      // Para bloqueios semanais (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
-  reason       String?   // Motivo do bloqueio
+  date         DateTime?
+  startTime    String?
+  endTime      String?
+  recurringDay Int?
+  reason       String?
+  createdAt    DateTime  @default(now())
   court        Court     @relation(fields: [courtId], references: [id])
 
-  createdAt    DateTime  @default(now())
+  @@index([courtId], map: "BlockedTime_courtId_fkey")
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 enum BookingStatus {
