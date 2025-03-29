@@ -30,3 +30,21 @@ exports.getCourtById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.updateCourt = async (req, res) => {
+  try {
+    const court = await courtService.updateCourt(req.params.id, req.body);
+    res.json({ message: "Quadra atualizada com sucesso", court });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.deleteCourt = async (req, res) => {
+  try {
+    await courtService.deleteCourt(req.params.id);
+    res.json({ message: "Quadra excluída com sucesso" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

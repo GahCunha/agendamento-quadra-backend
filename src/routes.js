@@ -28,6 +28,18 @@ router.post(
 );
 router.get("/courts", courtController.listCourts);
 router.get("/courts/:id", courtController.getCourtById);
+router.patch(
+  "/courts/:id",
+  authMiddleware,
+  adminMiddleware,
+  courtController.updateCourt
+);
+router.delete(
+  "/courts/:id",
+  authMiddleware,
+  adminMiddleware,
+  courtController.deleteCourt
+);
 
 // Rotas de reservas
 router.post("/bookings", authMiddleware, bookingController.createBooking);
