@@ -5,8 +5,12 @@ exports.createUser = async (req, res) => {
     const user = await userService.createUser(req.body);
     res.status(201).json(user);
   } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+    if (error.code === "P2002" && error.meta && error.meta.target.includes("email")) {
+      res.status(409).json({ error: "Email já está em uso." });
+    } else {
+      res.status(400).json({ error: error.message });
+    }
+  }
 };
 
 exports.getMe = async (req, res) => {
