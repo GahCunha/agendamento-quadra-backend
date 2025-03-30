@@ -195,6 +195,13 @@ async function getBookingsByCourt(courtId) {
       startTime: true,
       endTime: true,
       status: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
     },
   });
 }
