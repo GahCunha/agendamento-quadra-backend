@@ -23,7 +23,7 @@ Esta API foi desenvolvida para gerenciar reservas de quadras esportivas, permiti
     -   Definição de horários bloqueados para impedir reservas em determinados períodos.
     -   Listagem e remoção de bloqueios.
 -   **Documentação Interativa:**
-    -   Documentação completa e interativa via Swagger, disponível em `/api/docs`.
+    -   Documentação completa e interativa via Swagger, disponível em `/api/docs` ou em [Documentacao EndPoints](https://agendamento-quadra.up.railway.app/api/docs).
 
 ## Tecnologias Utilizadas
 
