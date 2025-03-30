@@ -167,3 +167,12 @@ Consulte a documentação Swagger para uma lista completa dos endpoints e exempl
 ## Contribuições
 
 Sinta-se à vontade para abrir issues e pull requests para melhorar a API.
+
+---
+Este código foi criado para aprendizado e atividades da disciplina de Desenvolvimento Web, estando disponível para fins **educativos**.
+
+- (c)[Caio da Silva](https://github.com/CaioSilvaCsv) : 2025.
+- (c)[Gabriel Cunha](https://github.com/GahCunha) : 2025.
+- (c)[Wender Alves](https://github.com/was8) : 2025.
+
+---
