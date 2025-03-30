@@ -146,7 +146,7 @@ const cancelBooking = async (id, userId, userRole) => {
   });
 };
 
-const updateBookingStatus = async (id, status) => {
+const updateBookingStatus = async (id, status, reason = null) => {
   const validStatuses = ["APPROVED", "REJECTED", "CANCELLED"];
 
   if (!validStatuses.includes(status)) {
@@ -158,15 +158,25 @@ const updateBookingStatus = async (id, status) => {
   const booking = await prisma.booking.findUnique({
     where: { id: parseInt(id) },
   });
+
   if (!booking) {
     throw new Error("Reserva não encontrada.");
   }
 
+  const updateData = { status };
+
+  if (status === "REJECTED") {
+    updateData.reason = reason || "Agendamento rejeitado.";
+  } else {
+    updateData.reason = null;
+  }
+
   return prisma.booking.update({
     where: { id: parseInt(id) },
-    data: { status },
+    data: updateData,
   });
 };
+
 
 const getMyBookings = async (userId) => {
   return prisma.booking.findMany({

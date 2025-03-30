@@ -66,14 +66,15 @@ exports.cancelBooking = async (req, res) => {
 exports.updateBookingStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, reason } = req.body;
 
-    const updatedBooking = await bookingService.updateBookingStatus(id, status);
+    const updatedBooking = await bookingService.updateBookingStatus(id, status, reason);
     res.json(updatedBooking);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
+
 
 exports.getBookingsByCourt = async (req, res) => {
   const courtId = parseInt(req.params.courtId)
