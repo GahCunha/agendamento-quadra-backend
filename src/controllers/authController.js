@@ -30,3 +30,22 @@ exports.refreshToken = async (req, res) => {
     return res.status(401).json({ error: error.message });
   }
 };
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const message = await authService.forgotPasswordService(req.body.email);
+    res.status(200).json({ message });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    const message = await authService.resetPasswordService(token, newPassword);
+    res.status(200).json({ message });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

@@ -86,4 +86,11 @@ router.delete(
   blockedTimeController.deleteBlockedTime
 );
 
+// Rota para solicitar a redefinição da senha
+router.post("/auth/forgot-password", authController.forgotPassword);
+
+// Rota para redefinir a senha usando o token
+router.post("/auth/reset-password", authController.resetPassword);
+
+
 module.exports = router;
