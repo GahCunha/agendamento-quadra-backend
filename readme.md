@@ -108,7 +108,7 @@ Esta API foi desenvolvida para gerenciar reservas de quadras esportivas, permiti
     Inicie a aplicação utilizando o comando:
 
     ```bash
-    npm start
+    npm run dev
     ```
 
     A API ficará disponível na porta definida (por padrão, 3030) e a documentação interativa via Swagger poderá ser acessada em:
