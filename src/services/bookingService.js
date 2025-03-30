@@ -15,10 +15,10 @@ const createBooking = async ({ userId, courtId, date, startTime, endTime }) => {
     throw new Error("Horários de funcionamento da quadra não definidos.");
   }
 
-  // 🛑 Verifica se o usuário já tem 3 reservas nesta semana
+  // Verifica se o usuário já tem 3 reservas nesta semana
   const weekStart = startOfWeek(bookingDate, { weekStartsOn: 1 });
   const weekEnd = endOfWeek(bookingDate, { weekStartsOn: 1 });
-  
+
   const bookingsThisWeek = await prisma.booking.count({
     where: {
       userId,
@@ -26,9 +26,7 @@ const createBooking = async ({ userId, courtId, date, startTime, endTime }) => {
         gte: weekStart,
         lte: weekEnd,
       },
-      status: {
-        in: ["PENDING", "APPROVED"],
-      },
+      status: { in: ["PENDING", "APPROVED"] },
     },
   });
 
@@ -43,8 +41,8 @@ const createBooking = async ({ userId, courtId, date, startTime, endTime }) => {
     throw new Error("Horários inválidos. Certifique-se de enviar no formato correto.");
   }
 
-  const [openHour, openMinute] = court.openTime.split(":").map(Number);
-  const [closeHour, closeMinute] = court.closeTime.split(":").map(Number);
+  const [openHour] = court.openTime.split(":").map(Number);
+  const [closeHour] = court.closeTime.split(":").map(Number);
   const courtOpenTime = new Date(`${date}T${court.openTime}:00.000Z`);
   const courtCloseTime = new Date(`${date}T${court.closeTime}:00.000Z`);
 
@@ -92,16 +90,23 @@ const createBooking = async ({ userId, courtId, date, startTime, endTime }) => {
     throw new Error("Este horário está bloqueado para reservas.");
   }
 
+  // Verifica se já existe uma reserva para a mesma quadra com horário que se sobrepõe
   const existingBooking = await prisma.booking.findFirst({
     where: {
-      userId,
+      courtId,
       date: bookingDate,
-      OR: [{ startTime: { lt: userEndTime }, endTime: { gt: userStartTime } }],
+      status: { in: ["PENDING", "APPROVED"] },
+      OR: [
+        {
+          startTime: { lt: userEndTime },
+          endTime: { gt: userStartTime },
+        },
+      ],
     },
   });
 
   if (existingBooking) {
-    throw new Error("Usuário já tem uma reserva nesse horário.");
+    throw new Error("Já existe uma reserva para esse horário nesta quadra.");
   }
 
   return prisma.booking.create({
@@ -115,6 +120,7 @@ const createBooking = async ({ userId, courtId, date, startTime, endTime }) => {
     },
   });
 };
+
 const getUserBookings = async (userId) => {
   return prisma.booking.findMany({
     where: { userId: parseInt(userId) },
